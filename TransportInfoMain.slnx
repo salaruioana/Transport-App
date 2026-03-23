@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="bin/Debug/cities.txt" />
+  </Folder>
   <Project Path="../Commons/Commons.csproj" Id="b7031575-9890-48cb-b56e-d49e91f11fe1" />
   <Project Path="../Model/Model.csproj" Id="cc02619e-613c-47d7-8780-577cfa74aad8" />
   <Project Path="../Presenter/Presenter.csproj" Id="14ce0d8a-c08b-49c8-aeeb-4e863f3f4519" />
