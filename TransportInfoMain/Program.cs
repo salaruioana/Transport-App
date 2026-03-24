@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,28 +8,41 @@ using System.Threading.Tasks;
 
 namespace TransportInfo
 {
+    public enum ViewType
+    {
+        Console,
+        WinForms
+    }
 
     internal class Program
     {
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            ViewType selectedView = ViewType.WinForms; // Schimbă în ViewType.Console pentru terminal
 
-            IModel model = new Model();
-            //pentru varianta consola, se poate inlocui IView view new ConsoleView(model)
-            FormView view = new FormView(model);
-            IPresenter presenter = new Presenter(view, model);
-            view.SetPresenter(presenter);
+            IModel model = new Model(); // Modelul e comun
+            IView view;
+            IPresenter presenter;
 
-            presenter.Init();
-            //asta se comenteaza pentru consola
-            view.RefreshCityLists();
-            //asta se decomenteaza pentru consola
-            //((ConsoleView)view).Start();
-            //asta se comenteaza pentru consola
-            Application.Run(view);
+            if (selectedView == ViewType.WinForms)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                view = new FormView(model);
+                presenter = new Presenter(view, model);
+                view.SetPresenter(presenter);
+
+                Application.Run((Form)view);
+            }
+            else
+            {
+                view = new ConsoleView(model);
+                presenter = new Presenter(view, model);
+                view.SetPresenter(presenter);
+                ((ConsoleView)view).Start();
+            }
         }
     }
 }
