@@ -28,6 +28,7 @@ namespace TransportInfo
             {
                 _model.InitializeData();
                 _view.Display("Fisier incarcat: " + _model.CityCount + " orase." + Environment.NewLine, "magenta");
+
             }
         }
 

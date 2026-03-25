@@ -183,7 +183,7 @@ namespace TransportInfo
             string[] toks = line.Split('\t');
 
             CultureInfo ci = (CultureInfo)(CultureInfo.CurrentCulture.Clone()); // CultureInfo.InvariantCulture
-            ci.NumberFormat.NumberDecimalSeparator = ".";
+            ci.NumberFormat.NumberDecimalSeparator = ",";
 
             City city = new City(toks[0], Convert.ToDouble(toks[1], ci), Convert.ToDouble(toks[2], ci));
             return city;

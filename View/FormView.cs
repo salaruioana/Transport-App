@@ -49,6 +49,8 @@ namespace TransportInfo
             listBoxModUtilizare.Items.Add("Utilizator");
             listBoxModUtilizare.Items.Add("Administrator");
             listBoxModUtilizare.Items.Add("Iesire");
+
+            RefreshCityLists();
         }
 
 
@@ -77,6 +79,8 @@ namespace TransportInfo
 
         private void listBoxModUtilizare_SelectedIndexChanged(object sender, EventArgs e)
         {
+            RefreshCityLists();
+
             string selectedRole = listBoxModUtilizare.SelectedItem?.ToString();
             listBoxOptiuniDetaliate.Items.Clear();
 

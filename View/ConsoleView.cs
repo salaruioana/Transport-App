@@ -162,6 +162,7 @@ namespace TransportInfo
             Display(orase + Environment.NewLine, "cyan");
         }
 
+
         public void Display(in string text, in string color)
         {
             ConsoleColor c = ConsoleColor.DarkGray;

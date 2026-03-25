@@ -10,5 +10,6 @@ namespace TransportInfo
     {
         void Display(in string text, in string color);
         void SetPresenter(in IPresenter presenter);
+
     }
 }
