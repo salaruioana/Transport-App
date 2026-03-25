@@ -47,7 +47,10 @@ namespace TransportInfo
             try
             {
                 if (_model.Add(city))
+                {
+                    _model.SaveData();
                     _view.Display("Orasul a fost adaugat." + Environment.NewLine, "green");
+                }
                 else
                     _view.Display("Eroare: orasul nu a putut fi adaugat." + Environment.NewLine, "red");
             }
@@ -72,6 +75,7 @@ namespace TransportInfo
             City c2 = GetCity(city2);
             double distance = Calculator.Distance(c1, c2);
             _view.Display(("Distanta intre " + city1 + " si " + city2 + " este: " + distance.ToString("F2") + " km."),"cyan");
+            _view.Display(("Costul transportului intre " + city1 + " si " + city2 + " este: " + Calculator.Cost(distance).ToString("F2") + " lei."), "magenta");
         }
 
         void IPresenter.RemoveCity(in string name)

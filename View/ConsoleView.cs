@@ -52,7 +52,7 @@ namespace TransportInfo
                     case UserChoice.Exit:
                         //de completat
                         // Nu se realizeaza inchiderea aplicatiei din layerul de prezentare, ci se transmite intentia catre controller pentru a opri toate procesele
-                        Console.WriteLine("Închidere aplicație...");
+                        Console.WriteLine("Inchidere aplicatie...");
                         _presenter.Exit();
                         break;
 
@@ -130,24 +130,27 @@ namespace TransportInfo
         //menita sa creeze un oras nou
         private City InputCity()
         {
-            Console.WriteLine("Introduceti numele orasului: ");
-            City city = new City();
+            Console.Write("Introduceti numele orasului: ");
             string name = Console.ReadLine();
+
+            // Cream formatul cu punct, exact ca în Model.cs
+            CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            ci.NumberFormat.NumberDecimalSeparator = ".";
 
             try
             {
-                Console.WriteLine("Introduceti latitudinea (ex: 47.15): ");
-                double lat = Convert.ToDouble(Console.ReadLine());
+                Console.Write("Introduceti latitudinea (ex: 47.15): ");
+                double lat = Convert.ToDouble(Console.ReadLine(), ci); 
 
-                Console.WriteLine("Introduceti longitudinea (ex: 27.58): ");
-                double lon = Convert.ToDouble(Console.ReadLine());
+                Console.Write("Introduceti longitudinea (ex: 27.58): ");
+                double lon = Convert.ToDouble(Console.ReadLine(), ci); 
 
                 return new City(name, lat, lon);
             }
             catch (FormatException)
             {
-                Console.WriteLine("Formatul latitudinii/longitudinii este invalid. Vă rugăm să introduceți un număr valid.");
-                return InputCity(); // Recurent pentru a permite reintroducerea datelor
+                Console.WriteLine("Format invalid! Folositi PUNCT (.) pentru zecimale.");
+                return InputCity();
             }
         }
 

@@ -176,32 +176,18 @@ namespace TransportInfo
             else
                 return false;
         }
-
         private static City ParseCityLine(string line)
         {
-            // Verificăm dacă linia are text
-            if (string.IsNullOrWhiteSpace(line)) return new City("", 0, 0);
+            // citeste informatiile unui oras de pe o linie din fisier
 
-            // Tăiem după Tab sau Spațiu
-            string[] toks = line.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] toks = line.Split('\t');
 
-            // Dacă nu avem 3 elemente, returnăm un oraș cu nume gol ca să știm că e invalid
-            if (toks.Length < 3) return new City("", 0, 0);
+            CultureInfo ci = (CultureInfo)(CultureInfo.CurrentCulture.Clone()); // CultureInfo.InvariantCulture
+            ci.NumberFormat.NumberDecimalSeparator = ".";
 
-            try
-            {
-                string nume = toks[0];
-                // InvariantCulture rezolvă eroarea de conversie (punct vs virgulă)
-                double lat = double.Parse(toks[1], System.Globalization.CultureInfo.InvariantCulture);
-                double lon = double.Parse(toks[2], System.Globalization.CultureInfo.InvariantCulture);
-
-                return new City(nume, lat, lon);
-            }
-            catch
-            {
-                // În caz de eroare la numere, returnăm oraș invalid
-                return new City("", 0, 0);
-            }
+            City city = new City(toks[0], Convert.ToDouble(toks[1], ci), Convert.ToDouble(toks[2], ci));
+            return city;
         }
     }
+
 }

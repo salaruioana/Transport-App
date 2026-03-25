@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -44,7 +45,7 @@ namespace TransportInfo
         {
             InitializeComponent();
             _model = model;
-            // Adăugăm manual opțiunile de bază în prima listă
+            // adaugam manual optiunile principale de navigare
             listBoxModUtilizare.Items.Add("Utilizator");
             listBoxModUtilizare.Items.Add("Administrator");
             listBoxModUtilizare.Items.Add("Iesire");
@@ -53,17 +54,16 @@ namespace TransportInfo
 
         public void RefreshCityLists()
         {
-            // Curățăm listele actuale ca să nu avem duplicate la refresh
+            // curatam listele anterioare
             comboBoxOrasul1.Items.Clear();
             comboBoxOrasul2.Items.Clear();
             comboBoxStergereOras.Items.Clear();
 
-            // Modelul tău are ListAll() care returnează un string cu orase separate prin virgulă
             string allCitiesString = _model.ListAll();
 
             if (!string.IsNullOrEmpty(allCitiesString))
             {
-                // Spargem string-ul în nume individuale
+                // spargem string-ul in nume individuale
                 string[] cityNames = allCitiesString.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (string name in cityNames)
@@ -84,7 +84,7 @@ namespace TransportInfo
             {
                 listBoxOptiuniDetaliate.Items.Add("Informatii despre o ruta");
                 listBoxOptiuniDetaliate.Items.Add("Afisarea tuturor oraselor");
-                // Dezactivează panel-urile de Admin
+                // dezactiveaza panel-urile de Admin
                 panelAdaugareOras.Enabled = false;
                 panelStergere.Enabled = false;
             }
@@ -92,6 +92,7 @@ namespace TransportInfo
             {
                 listBoxOptiuniDetaliate.Items.Add("Introducerea unui nou oras");
                 listBoxOptiuniDetaliate.Items.Add("Stergerea unui oras");
+                listBoxOptiuniDetaliate.Items.Add("Afisarea tuturor oraselor");
                 panelAdaugareOras.Enabled = true;
                 panelStergere.Enabled = true;
             }
@@ -150,34 +151,35 @@ namespace TransportInfo
         {
             try
             {
-                // Citim textul din TextBox (ex: "Iasi, 47.15, 27.58")
                 string input = textBoxAlegereOras.Text;
-                string[] date = input.Split(',');
+                string[] date = input.Split(';');
 
                 if (date.Length == 3)
                 {
                     string nume = date[0].Trim();
-                    // Folosim CultureInfo.InvariantCulture pentru a accepta punctul ca separator zecimal
-                    double lat = double.Parse(date[1].Trim(), System.Globalization.CultureInfo.InvariantCulture);
-                    double lon = double.Parse(date[2].Trim(), System.Globalization.CultureInfo.InvariantCulture);
+
+                    CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                    ci.NumberFormat.NumberDecimalSeparator = ".";
+
+                    double lat = Convert.ToDouble(date[1].Trim(), ci);
+                    double lon = Convert.ToDouble(date[2].Trim(), ci);
 
                     City orasNou = new City(nume, lat, lon);
 
-                    // Trimitem comanda la Presenter (exact ca in consola)
                     _presenter.AddCity(orasNou);
 
-                    // Actualizam interfata
                     RefreshCityLists();
                     textBoxAlegereOras.Clear();
+                    Display("Orasul " + nume + " a fost adaugat cu succes!", "green");
                 }
                 else
                 {
-                    Display("Format invalid! Folositi: Nume, Latitudine, Longitudine", "red");
+                    Display("Format invalid! Folositi: Nume; Latitudine.XX; Longitudine.XX", "red");
                 }
             }
             catch (Exception ex)
             {
-                Display("Eroare la adaugare: " + ex.Message, "red");
+                Display("Eroare: Asigurati-va ca folositi PUNCT pentru zecimale si ; intre valori.", "red");
             }
         }
 
@@ -188,10 +190,10 @@ namespace TransportInfo
 
             if (!string.IsNullOrEmpty(cityName))
             {
-                // Trimitem comanda la Presenter
+                // trimitem comanda la Presenter
                 _presenter.RemoveCity(cityName);
 
-                // Dupa stergere, trebuie sa reimprospatam listele ca orasul sa dispara
+                // dupa stergere, trebuie sa reimprospatam listele ca orasul sa dispara
                 RefreshCityLists();
                 comboBoxStergereOras.Text = "";
             }
